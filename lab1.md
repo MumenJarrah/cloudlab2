@@ -1,11 +1,5 @@
-# Lab 5: Public-Key Infrastructure (PKI) Lab
+# Assignment 3: Public-Key Infrastructure (PKI) Lab
 
-```
-Copyright © 2018 by Wenliang Du.
-This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
-License. If you remix, transform, or build upon the material, this copyright notice must be left intact, or
-reproduced in a way that is reasonable to the medium in which the work is being re-published.
-```
 ## 1 Overview
 
 Public key cryptography is the foundation of today’s secure communication, but it is subject to man-in-the-
