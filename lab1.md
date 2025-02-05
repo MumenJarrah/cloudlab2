@@ -28,7 +28,7 @@ Failing to do so will result in an invalid package that can’t be used to score
 
 ### Directory Structure
  * Each submitted package MUST follow the directory structure below:
-
+```
 <package>/
     |-- main.c       # The only C source file (mandatory)
     |-- input/       # Test suite with 100% gcov coverage
@@ -36,7 +36,7 @@ Failing to do so will result in an invalid package that can’t be used to score
     |-- crash/       # Sample inputs that cause a crash
     |   |-- <*>      # Arbitrary sample filenames
     |-- README.md    # (Optional) Explanation of code and the embedded bug
-
+```
 ## 2 Lab Environment
 
 ### Step 1: Download and Extract the Lab Files
