@@ -30,12 +30,12 @@ Failing to do so will result in an invalid package that can’t be used to score
  * Each submitted package MUST follow the directory structure below:
 ```
 <package>/
-    |-- main.c       // The only C source file (mandatory)
-    |-- input/       // Test suite with 100% gcov coverage
-    |   |-- <*>      // Arbitrary test case filenames
-    |-- crash/       // Sample inputs that cause a crash
-    |   |-- <*>      // Arbitrary sample filenames
-    |-- README.md    // (Optional) Explanation of code and the embedded bug
+    |-- main.c       // mandatory: the only code file to submit
+    |-- input/       // mandatory: the test suite with 100% gcov coverage
+    |   |-- <*>      // test case name can be arbitrary valid filename
+    |-- crash/       // mandatory: sample inputs that crash the program
+    |   |-- <*>      // sample name can be arbitrary valid filename
+    |-- README.md    // optional: an explanatory note on the code and embedded bug
 ```
 ## 2 Lab Environment
 
