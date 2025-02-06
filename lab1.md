@@ -16,6 +16,7 @@ analysis tool fails to find the bug *within a computation bound*, you have found
 in this program analysis tool and will be awarded full marks for that component.
 
 In this lab, the computation bound is **15 minutes per analyzer × 2 analyzers**:
+
     • AFL++: as a representative fuzzer
 
 To confine the scope of the analysis and standardize the auto-grading process, we will NOT accept
@@ -41,7 +42,7 @@ Failing to do so will result in an invalid package that can’t be used to score
     - Only valid C programs are allowed. DO NOT code in C++.
     - The size of `main.c` should NOT exceed 256KB (i.e., 256 × 2^10 bytes).
    
-  * Your program can only invoke three library calls, all provided in interface.h available below.
+  * Your program can only invoke three library calls, all provided in `interface.h` available below.
     - `ssize_t in(void *buffer, size_t count)` which reads in at max count bytes from stdin and store then in buffer. The return value indicates the actual number of bytes read in or a negative number indicating failure.
     - `int out(const char *buffer)` which prints the buffer string to stdout. The return value indicates the actual number of
 bytes written out.
