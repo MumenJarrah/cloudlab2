@@ -1,4 +1,4 @@
-# Lab 3: Fuzzing lab (Bugs That Are Hard to Catch)
+# Lab 3: Fuzzing lab
 
 ## Bugs That Are Hard to Catch
 
