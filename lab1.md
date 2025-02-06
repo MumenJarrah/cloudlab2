@@ -1,10 +1,8 @@
 # Lab 3: Fuzzing lab
-
 ## Bugs That Are Hard to Catch
 
-![](images/lab5-00-u.png)
 
-## Overview
+### Overview
 
 Program analysis is used both by attackers and defenders to hunt for potential issues in the software.
 However, there are always code patterns that pose unique challenges for these tools to analyze. The
@@ -49,6 +47,7 @@ bytes written out.
 
 ```
 //interface.h
+
 #include <stddef.h>
 #include <sys/types.h>
 
@@ -75,7 +74,7 @@ void abort(void);
 without special modification to these tools. In other words, your program can be analyzed using
 the tool invocation command provided in later part of the lab.
  * Your program should have **one and only one bug** that is intentionally planted. If any of the tool finds a crash in your program, even the crash is not caused by the intended bug, the tool is considered successful and this package cannot be used to claim victory over that tool.
- * Provide a set of test cases that achieves 100% coverage (see details on gcov below).
+ * Provide a set of test cases that achieves 100% coverage (see details on `gcov` below).
     - Each test case should NOT crash the program, i.e., exiting with a non-zero status code.
     - Each test case should complete its execution in 10 seconds.
     - Each test case should NOT exceed 1024 bytes in size.
@@ -93,10 +92,27 @@ Each package will be analyzed by all program analysis tools. For any tool X, if 
 **A maximum of 10 packages** can be submitted. You will have full points for tool X evasion as long as you have one package that “evaded” the detection from tool X. If you are confident that one package can be used to score all components, feel free to submit one package only. However, to be on the safe side, it is highly advised to submit multiple packages with
 different strategies to confuse these program analysis tools.
 
-## 2 Lab Environment
+### 1 Lab Environment Preparation
 
-### Step 1: Download and Extract the Lab Files
-Download Labsetup.zip from the lab’s website and unzip it. This will provide you with the necessary files, including the docker-compose.yml for setting up the lab environment.
+Although we provide two modes of preparation, we highly recommend you to setup a local VM (i.e., Option 1) for this lab as long as your machine can support it. There are two reasons for this recommendation:
+    1. The ugster platform is limited in resources and cannot accommodate everyone.
+    2. A local VM enables more agile development and a more controllable environment.
+
+#### Option 1: local VM
+You need to create a fresh VM with Ubuntu version 22.04.5 LTS. You can choose your favorite VM
+management tool for this task, including but not limited to VirtualBox, VMware, Hyper-V, etc. Once
+your Ubuntu VM is ready, log / SSH into your account and follow the common provision steps. You
+will need sudo passwords for the provision.
+
+#### Option 2: ugster VM
+If option 1 is not feasible on your machine (e.g., Mac computers with Apple silicon chips), you can opt
+to use the ugster VM, as you experienced with Assignment 1. To be specific, you can use the portal.sh
+script to create a new VM, destroy an existing VM, or ssh into a running VM. To learn more about
+portal.sh and how to use it, please visit http://ugster72d.student.cs.uwaterloo.ca:8000/.
+Unfortunately, in this assignment, we cannot re-use the VMs you have in A1 due to different resource
+requirements. This means that you will need to register again for the new platform with a
+new pair of keys. This can be done with ./portal.sh register. However, this time, once you are
+registered, take care of your private key! More importantly,
 
 
 ### You have successfully completed the lab
