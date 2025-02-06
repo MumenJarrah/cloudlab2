@@ -27,8 +27,7 @@ also information that bootstraps analysis and shows evidence that a bug indeed e
 Specifically, each package MUST be prepared according to the requirements and restrictions below.
 Failing to do so will result in an invalid package that can’t be used to score this assignment component.
 
-### Directory Structure
-  * Each submitted package MUST follow the directory structure below:
+  * **Directory Structure.** Each submitted package MUST follow the directory structure below:
     ```
     <package>/
         |-- main.c       // mandatory: the only code file to submit
@@ -71,8 +70,23 @@ int out(const char *buffer) {
 void abort(void);
 ```
 
-
-
+ * Your program can only take input from `stdin` using the provided `in()` function in `interface.h`. It should NOT take input from command line arguments nor environment variables. The size of input acquired from `stdin` should NOT exceed 1024 bytes.
+ * Your program MUST be *compatible* with all program analysis tools used in this lab
+without special modification to these tools. In other words, your program can be analyzed using
+the tool invocation command provided in later part of the lab.
+ * Your program should have **one and only one bug** that is intentionally planted. If any of the tool finds a crash in your program, even the crash is not caused by the intended bug, the tool is considered successful and this package cannot be used to claim victory over that tool.
+ * Provide a set of test cases that achieves 100% coverage (see details on gcov below).
+    - Each test case should NOT crash the program, i.e., exiting with a non-zero status code.
+    - Each test case should complete its execution in 10 seconds.
+    - Each test case should NOT exceed 1024 bytes in size.
+ * Provide **at least one** sample input that can cause the program to crash by triggering the planted bug — this is to provide evidence on the existence of the bug.
+ * Avoid using features that are known limitations for most program analysis tools, including:
+    - DO NOT use any other library functions (including libc functions). The only permitted
+library routines are given in the header file `interface.h`.
+    - DO NOT use floating-point operations in your program.
+    - DO NOT use inline assemblies in your program.
+    - DO NOT use multi-threading. The entire program logic must be able to execute end-to-end
+in a single process and a single thread.
 
 
 ## 2 Lab Environment
