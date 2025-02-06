@@ -16,7 +16,7 @@ analysis tool fails to find the bug *within a computation bound*, you have found
 in this program analysis tool and will be awarded full marks for that component.
 
 In this lab, the computation bound is **15 minutes per analyzer × 2 analyzers**:
-  • AFL++: as a representative fuzzer
+    • AFL++: as a representative fuzzer
 
 To confine the scope of the analysis and standardize the auto-grading process, we will NOT accept
 arbitrary programs for this lab. Instead, you are encouraged to produce minimal programs
@@ -49,7 +49,7 @@ bytes written out.
 
 ```
 //interface.h
-    #include <stddef.h>
+#include <stddef.h>
 #include <sys/types.h>
 
 /* external interfaces */
