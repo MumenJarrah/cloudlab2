@@ -27,16 +27,24 @@ Specifically, each package MUST be prepared according to the requirements and re
 Failing to do so will result in an invalid package that can’t be used to score this assignment component.
 
 ### Directory Structure
- * Each submitted package MUST follow the directory structure below:
-```
-<package>/
-    |-- main.c       // mandatory: the only code file to submit
-    |-- input/       // mandatory: the test suite with 100% gcov coverage
-    |   |-- <*>      // test case name can be arbitrary valid filename
-    |-- crash/       // mandatory: sample inputs that crash the program
-    |   |-- <*>      // sample name can be arbitrary valid filename
-    |-- README.md    // optional: an explanatory note on the code and embedded bug
-```
+  * Each submitted package MUST follow the directory structure below:
+    ```
+    <package>/
+        |-- main.c       // mandatory: the only code file to submit
+        |-- input/       // mandatory: the test suite with 100% gcov coverage
+        |   |-- <*>      // test case name can be arbitrary valid filename
+        |-- crash/       // mandatory: sample inputs that crash the program
+        |   |-- <*>      // sample name can be arbitrary valid filename
+        |-- README.md    // optional: an explanatory note on the code and embedded bug
+    ```
+  * Include all source code of the program in one and only one `main.c` file. This `main.c` is the only code file you need to include in the package. DO NOT include `interface.h`.
+    - Only valid C programs are allowed. DO NOT code in C++.
+    - The size of `main.c` should NOT exceed 256KB (i.e., 256 × 2^10 bytes).
+
+
+
+
+
 ## 2 Lab Environment
 
 ### Step 1: Download and Extract the Lab Files
