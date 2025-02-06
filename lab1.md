@@ -40,6 +40,35 @@ Failing to do so will result in an invalid package that can’t be used to score
   * Include all source code of the program in one and only one `main.c` file. This `main.c` is the only code file you need to include in the package. DO NOT include `interface.h`.
     - Only valid C programs are allowed. DO NOT code in C++.
     - The size of `main.c` should NOT exceed 256KB (i.e., 256 × 2^10 bytes).
+   
+  * Your program can only invoke three library calls, all provided in interface.h available below.
+    - `ssize_t in(void *buffer, size_t count)` which reads in at max count bytes from stdin and store then in buffer. The return value indicates the actual number of bytes read in or a negative number indicating failure.
+    - `int out(const char *buffer)` which prints the buffer string to stdout. The return value indicates the actual number of
+bytes written out.
+    - `void abort(void)` which forces a crash of program. Note that this is NOT the only way to crash a program.
+
+```
+//interface.h
+    #include <stddef.h>
+#include <sys/types.h>
+
+/* external interfaces */
+ssize_t read(int fd, void *buffer, size_t count);
+int puts(const char *buffer);
+
+/* exposed interfaces */
+inline __attribute__((always_inline))
+ssize_t in(void *buffer, size_t count) {
+    return read(0, buffer, count);
+}
+
+inline __attribute__((always_inline))
+int out(const char *buffer) {
+    return puts(buffer);
+}
+
+void abort(void);
+```
 
 
 
