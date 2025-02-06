@@ -88,6 +88,10 @@ library routines are given in the header file `interface.h`.
     - DO NOT use multi-threading. The entire program logic must be able to execute end-to-end
 in a single process and a single thread.
 
+Each package will be analyzed by all program analysis tools. For any tool X, if the tool finds a bug (even not the planted one), it is considered a success. Otherwise, the bug has managed to “evade” the detection from tool X and the package will be counted towards the scoring of tool X evasion.
+
+**A maximum of 10 packages** can be submitted. You will have full points for tool X evasion as long as you have one package that “evaded” the detection from tool X. If you are confident that one package can be used to score all components, feel free to submit one package only. However, to be on the safe side, it is highly advised to submit multiple packages with
+different strategies to confuse these program analysis tools.
 
 ## 2 Lab Environment
 
