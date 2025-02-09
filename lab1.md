@@ -311,8 +311,42 @@ Upon successful completion, you will see an ==== END OF PROVISION === mark in th
 
 
 ### 2. Coverage tracking with `gcov`
-[`gcov`](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) is a tool you can use in conjunction with gcc to test code coverage in your programs. In a
-nutshell, it tracks the the portion of code that is “covered” by a concrete execution at runtime and
-aggregates the coverage results from multiple runs to produce a final coverage report.
+[`gcov`](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) is a tool you can use in conjunction with `gcc` to test code coverage in your programs. In anutshell, it tracks the the portion of code that is “covered” by a concrete execution at runtime and aggregates the coverage results from multiple runs to produce a final coverage report.
+
+You can use the following `run-gcov.sh` script to check the coverage of your package. 
+```
+#!/bin/bash -e
+
+# sanity check
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <path-to-package-directory>"
+    exit 1
+fi
+
+# configuration
+PKG=$(readlink -f $1)
+WKS=output-gcov
+
+# entrypoint
+cd ${PKG}
+rm -rf ${WKS} && mkdir ${WKS}
+gcc -fprofile-arcs -ftest-coverage -g main.c -o ${WKS}/main
+for test in input/*; do
+    ${WKS}/main < ${test}
+done
+gcov -o ${WKS} -n main.c
+```
+
+In general, the script performs the following steps:
+
+```
+// Step 1: compile your code with gcov instrumentations
+$ gcc -fprofile-arcs -ftest-coverage -g main.c -o main
+// Step 2: execute each of your input test case
+$ for test in input/*; do main < ${test}; done
+// Step 3: collect and print coverage
+$ gcov -o ./ -n main.c
+```
+If you read a 100% coverage in your console, it means your test suite (provided under the input/ directory) has achieved complete coverage in gcov’s perspective.
 
 ### You have successfully completed the lab
