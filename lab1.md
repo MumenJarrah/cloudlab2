@@ -349,4 +349,81 @@ $ gcov -o ./ -n main.c
 ```
 If you read a 100% coverage in your console, it means your test suite (provided under the input/ directory) has achieved complete coverage in gcov’s perspective.
 
+### 3. Fuzzing with AFL++
+
+We use the open-source [AFL++ fuzzer](https://github.com/AFLplusplus/AFLplusplus), in particular, version stable (commit hash 78b7e14) which is the most up-to-date stable release of AFL++ as the lab is developed. You may want to read a bit of details on the [project page](https://aflplus.plus/) about AFL++ and fuzzing in general.
+
+AFL++ is provisioned into the VM as a Docker image tagged as afl. Once in the VM, you can use
+the following command to run the Docker image, get an interactive shell, and explore around. 
+
+```
+docker run \
+--tty --interactive \
+--volume <path-to-your-package>:/test \
+--workdir /test \
+--rm afl \
+bash
+```
+
+You can use the followign `run-afl.sh` script to fuzz your package:
+
+```
+#!/bin/bash -e
+
+# sanity check
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <path-to-package-directory>"
+    exit 1
+fi
+
+# configuration
+PKG=$(readlink -f $1)
+WKS=output-afl
+CMD=$(cat <<END
+    rm -rf ${WKS} && mkdir ${WKS} &&
+    afl-cc main.c -o ${WKS}/main &&
+    afl-fuzz -i input -o ${WKS}/output -- ${WKS}/main
+END
+)
+
+# entrypoint
+docker run \
+    --tty --interactive \
+    --volume ${PKG}:/test \
+    --workdir /test \
+    --rm afl \
+    bash -c "${CMD}"
+```
+
+In general, the script runs-off the `afl` Docker image and performs the following steps:
+
+```
+// Step 1: compile your code with afl instrumentations
+$ afl-cc main.c -o main
+// Step 2: start fuzzing your code
+$ afl-fuzz -i input -o output -- main
+```
+
+The output of the AFL++ fuzzing results are stored in the output directory.
+
+### 4. Examples
+
+The provided repository contains a sample package under directory `scripts/pkg-sample` to illustrate how a package should look like, with the addition of `interface.h` and `.gitignore` which shouldn’t
+be submitted. The code can also be found on [GitHub](https://github.com/meng-xu-cs/cs453-program-analysis-platform/tree/main/scripts/pkg-sample) as well.
+
+You can test out the sample package inside the VM via:
+
+```
+$ cd cs453-program-analysis-platform/scripts
+$ ./run-gcov.sh pkg-sample
+$ ./run-afl.sh pkg-sample
+$ ./run-klee.sh pkg-sample
+```
+
+The output should obviously show that:
+   1) This package does not provide 100% code coverage
+   2) It has a bug that is found by all tools.
+      
+Despite that this package sample cannot “evade” any program analysis tool, feel free to duplicate this template package to bootstrap your package preparation that can eventually “evade” the tools.
+
 ### You have successfully completed the lab
