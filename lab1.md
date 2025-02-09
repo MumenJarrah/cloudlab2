@@ -304,4 +304,15 @@ git submodule update --init
 
 Upon successful completion, you will see an ==== END OF PROVISION === mark in the terminal.
 
+   - NOTE: DO NOT use --recurse-submodules to clone the submodules as it will bring in many unnecessary dependencies of AFL++ and slow down the building process significantly.
+   - The `./ugster-up.sh` script will take quite some time to finish (about an hour or even two hours) so you might find utilities such as `tmux` or `screen` useful in case of unreliable SSH connections.
+   - During the process, you might be prompted to upgrade or restart system services. Simply hit “Enter” to go with the default choices suggested by `apt`.
+   - After provision, the entire VM will take about 30GB – 35GB storage on disk.
+
+
+### 2. Coverage tracking with `gcov`
+[`gcov`](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) is a tool you can use in conjunction with gcc to test code coverage in your programs. In a
+nutshell, it tracks the the portion of code that is “covered” by a concrete execution at runtime and
+aggregates the coverage results from multiple runs to produce a final coverage report.
+
 ### You have successfully completed the lab
