@@ -92,7 +92,7 @@ Each package will be analyzed by all program analysis tools. For any tool X, if 
 **A maximum of 10 packages** can be submitted. You will have full points for tool X evasion as long as you have one package that “evaded” the detection from tool X. If you are confident that one package can be used to score all components, feel free to submit one package only. However, to be on the safe side, it is highly advised to submit multiple packages with
 different strategies to confuse these program analysis tools.
 
-### 1 Lab Environment Preparation
+### 1. Lab Environment Preparation
 
 Although we provide two modes of preparation, we highly recommend you to setup a local VM (i.e., Option 1) for this lab as long as your machine can support it. There are two reasons for this recommendation:
     1. The ugster platform is limited in resources and cannot accommodate everyone.
@@ -101,18 +101,209 @@ Although we provide two modes of preparation, we highly recommend you to setup a
 #### Option 1: local VM
 You need to create a fresh VM with Ubuntu version 22.04.5 LTS. You can choose your favorite VM
 management tool for this task, including but not limited to VirtualBox, VMware, Hyper-V, etc. Once
-your Ubuntu VM is ready, log / SSH into your account and follow the common provision steps. You
+your Ubuntu VM is ready, log / SSH into your account and follow the common provision steps (shown below). You
 will need sudo passwords for the provision.
 
 #### Option 2: ugster VM
 If option 1 is not feasible on your machine (e.g., Mac computers with Apple silicon chips), you can opt
-to use the ugster VM, as you experienced with Assignment 1. To be specific, you can use the portal.sh
-script to create a new VM, destroy an existing VM, or ssh into a running VM. To learn more about
-portal.sh and how to use it, please visit http://ugster72d.student.cs.uwaterloo.ca:8000/.
-Unfortunately, in this assignment, we cannot re-use the VMs you have in A1 due to different resource
-requirements. This means that you will need to register again for the new platform with a
-new pair of keys. This can be done with ./portal.sh register. However, this time, once you are
-registered, take care of your private key! More importantly,
+to use the ugster VM. To be specific, you can use the `portal.sh` script to create a new VM, destroy an existing VM, or ssh into a running VM. The following is `portal.sh` and how to use it:
 
+```
+//portal.sh
+
+#!/bin/bash -e
+
+# Welcome to The Assignment Portal of CS 489/698 - Software and Systems Security
+#
+# This is not a regular website for broadcasting information. Instead, it is a
+# web service hidden behind the HTTP protocol and only intended for users of the
+# Software and Systems Security course for assignment-related tasks.
+#
+# The file you are currently viewing is a Bash-based client to interact with
+# the web service. This script is designed for a UNIX-like system (e.g., Ubuntu,
+# MacOS, or WSL on Windows) with `bash`, `curl`, and `ssh-keygen` available.
+#
+# To use this file,
+# - save it as a script (e.g., `portal.sh`)
+# - change its permission if needed (e.g., `chmod +x portal.sh`) and
+# - check its help message `./portal.sh help`
+#
+# Also check the FAQ section in the prompt.
+
+# course variables (SET BY ADMIN)
+host=ugster72d.student.cs.uwaterloo.ca
+port=8000
+GATEWAY=$host:$port
+NAMESPACE=s3
+
+# course variables (SET BY USERS)
+USR_DEFAULT=
+KEY_DEFAULT=key
+
+# alternative to set user info: environment variable
+if [ -z "${U}" ]; then
+  USR="${USR_DEFAULT}"
+else
+  USR="${U}"
+fi
+
+if [ -z "${K}" ]; then
+  KEY="${KEY_DEFAULT}"
+else
+  KEY="${K}"
+fi
+
+# command: print help message
+function cmd_help() {
+  cat <<EOF
+This is a Bash-based Client to the Assignment Portal of CS 489/698
+
+Before using this script, please check that you have set the course variables
+correctly on top of this file, including:
+- USR_DEFAULT, your UWaterloo username (currently set to "${USR_DEFAULT}")
+- KEY_DEFAULT, a path prefix for your key files (currently set to "${KEY_DEFAULT}")
+
+Alternatively, you can supply the same information via environment variables
+before calling this script, e.g.,
+U=<username> K=<path-prefix-to-passkey> ./portal.sh <command>
+
+Your current username is "${USR}" and path-prefix to passkey is "${KEY}".
+
+The following commands are available for everyone for VM management
+- help: print this help message
+- register: create a ed25519 key pair and register the user with the public key
+- status: check the status of the virtual machine allocated to the user
+- launch: launch the virtual machine allocated to the user
+- destroy: destroy the virtual machine allocated to the user
+- ssh: SSH into the virtual machine allocated to the user
+
+The following command are available if you are a system administrator
+- reset <uid>: reset the user to a state before registration
+- shutdown: send a shutdown request to the system
+
+**Frequently Asked Questions (FAQs)**
+
+Q: What is the path prefix for keys?
+A: This is a location on your local filesystem where you store your key pairs.
+   - The public key will be stored in a file with path: <path-prefix>.pub
+   - The private key will be stored in a file with path: <path-prefix>
+
+   For example,
+   - If your path prefix is "my_path", your keys will be
+     - "my_path.pub" and
+     - "my_path"
+   - If your path prefix is "/home/my_username/my_keys/course", you keys will be
+     - "/home/my_username/my_keys/course.pub" and
+     - "/home/my_username/my_keys/course"
+
+Q: I received a warning about conflicting fingerprints when on the SSH trial
+   into a newly re-created VM (i.e., destroyed and launched), is this normal?
+A: Yes, this is expected and is a defense mechanism against man-in-the-middle
+   (MiTM) attacks. To resolve this issue, simply follow the prompt and remove
+   the offending fingerprint.
+
+EOF
+}
+
+# command (special): generate a key pair and register a user with the public key
+function cmd_special_register() {
+  ssh-keygen -t ed25519 -C "${USR}@${NAMESPACE}" -f "${KEY}" -P ""
+  echo ""
+  echo "!!! IMPORTANT !!!"
+  echo "- Please keep your private key in a safe place."
+  echo "- If you lose it, you will LOSE ACCESS TO THE SYSTEM FOREVER."
+  echo "!!! IMPORTANT !!!"
+  echo ""
+  curl -w '\n' -s "${GATEWAY}/${USR}/register" -d @"${KEY}.pub"
+}
+
+# command (special): ssh into the allocated VM
+function cmd_special_ssh() {
+  local C=$(cmd_generic "config")
+  local X=(${C//:/ })
+  ssh -i ${KEY} vagrant@${X[0]} -p ${X[1]}
+}
+
+# command (generic): run a generic query
+function cmd_generic() {
+  local T=$(date +%s | xargs echo -n)
+  local S=$(echo -n "${T}" | ssh-keygen -Y sign -f "${KEY}" -n "${NAMESPACE}" -)
+  curl -w '\n' -s -X POST "${GATEWAY}/${USR}/$1" -d "${S}"
+}
+
+# command (generic): run a generic query (for admin commands)
+function cmd_generic_admin() {
+  local T=$(date +%s | xargs echo -n)
+  local S=$(echo -n "${T}" | ssh-keygen -Y sign -f "${KEY}" -n "${NAMESPACE}" -)
+  curl -w '\n' -s -X POST "${GATEWAY}/${USR}/$1/$2" -d "${S}"
+}
+
+# command (generic): run a system action (for admin commands)
+function cmd_generic_system() {
+  local T=$(date +%s | xargs echo -n)
+  local S=$(echo -n "${T}" | ssh-keygen -Y sign -f "${KEY}" -n "${NAMESPACE}" -)
+  curl -w '\n' -s -X POST "${GATEWAY}/${USR}/$1" -d "${S}"
+}
+
+# main entrypoint
+if [ -n "$1" ]; then
+  case "$1" in
+  help)
+    cmd_help
+    ;;
+  register)
+    cmd_special_register
+    ;;
+  status)
+    cmd_generic "status"
+    ;;
+  launch)
+    cmd_generic "launch"
+    ;;
+  destroy)
+    cmd_generic "destroy"
+    ;;
+  ssh)
+    cmd_special_ssh
+    ;;
+  reset)
+    cmd_generic_admin "reset" "$2"
+    ;;
+  list)
+    cmd_generic_system "list"
+    ;;
+  shutdown)
+    cmd_generic_system "shutdown"
+    ;;
+  *)
+    echo "unknown command, please see run '$0 help' for the help message"
+    ;;
+  esac
+else
+  cmd_help
+fi
+```
+
+You will need to register for the new platform with a new pair of keys. This can be done with `./portal.sh register`. However, this time, once you are registered, take care of your private key! More importantly,
+
+   - ./portal.sh register should be called only once, at the beginning of this assignment.
+   - The way to wipe out and reset your VM is through ./portal.sh destroy. Please do not use ./portal.sh register for this purpose.
+   - NOTE: if you lose your private key after successful registration, you will be locked out of the
+system completely. There is no way back.
+
+After you register to the `ugster` platform and have your VM launched, please SSH into your VM and
+follow the following common provision steps:
+
+#### Common provision step for both options
+After logging in / SSH into your VM, you can provision it with the following commands:
+
+```
+git clone https://github.com/meng-xu-cs/cs453-program-analysis-platform.git
+cd cs453-program-analysis-platform
+git submodule update --init
+./scripts/ugster-up.sh
+```
+
+Upon successful completion, you will see an ==== END OF PROVISION === mark in the terminal.
 
 ### You have successfully completed the lab
