@@ -109,8 +109,6 @@ If option 1 is not feasible on your machine (e.g., Mac computers with Apple sili
 to use the ugster VM. To be specific, you can use the `portal.sh` script to create a new VM, destroy an existing VM, or ssh into a running VM. The following is `portal.sh` and how to use it:
 
 ```
-//portal.sh
-
 #!/bin/bash -e
 
 # Welcome to The Assignment Portal of CS 489/698 - Software and Systems Security
